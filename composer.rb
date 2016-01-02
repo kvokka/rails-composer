@@ -2711,8 +2711,15 @@ end
 prefs[:pry] = true if config['pry']
 if prefs[:pry]
   say_wizard "recipe adding pry-rails gem"
-  add_gem 'pry-rails', :group => [:development, :test]
-  add_gem 'pry-rescue', :group => [:development, :test]
+  add_gem 'pry-rails', :group => [:development]
+  add_gem 'pry-rescue', :group => [:development]
+
+  #add some beauty to irb
+  add_gem 'pry-doc', :group => [:development]
+  add_gem 'pry-state', :group => [:development]
+  add_gem 'pry-coolline', :group => [:development]
+  add_gem 'hirb',  :group => [:development]
+  add_gem 'awesome_print', require: "ap" , :group => [:development]  
 end
 
 ## Rubocop
