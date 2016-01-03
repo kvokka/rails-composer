@@ -1223,7 +1223,8 @@ if recipes.include? 'frontend'
     ["Simple CSS", "simple"]] unless prefs.has_key? :frontend
     if (prefer :frontend, 'bootstrap3') || (prefer :frontend, 'bootstrap2')
        prefs[:icon_lib] = multiple_choice "Add font awesome icon lib?", [["None", "none"],
-        ["Font awesome", "font_awesome"]] unless prefs.has_key? :icon_lib
+          ["Font awesome", "font_awesome"]] unless prefs.has_key? :icon_lib
+    end
 end
 
 ## Email
@@ -1628,6 +1629,7 @@ if prefer :tests, 'rspec'
   add_gem 'database_cleaner', :group => :test
   add_gem 'launchy', :group => :test
   add_gem 'selenium-webdriver', :group => :test
+  add_gem 'shoulda-matchers', :group => :test
   if prefer :continuous_testing, 'guard'
     add_gem 'guard-bundler', :group => :development
     add_gem 'guard-rails', :group => :development
@@ -1859,6 +1861,16 @@ end
 stage_three do
   say_wizard "recipe stage three"
   if prefer :tests, 'rspec'
+    #Better hide it into other gem
+    File.open( 'spec/support/shoulda.rb', 'w' ) {|f| f.write ["require 'bundler/setup'",
+        "::Bundler.require(:default, :test)",
+        "require 'shoulda/matchers'",
+        "Shoulda::Matchers.configure do |config|",
+        "  config.integrate do |with|",
+        "    with.test_framework :rspec",
+        "    with.library :rails",
+        "  end",
+        "end"].join("\n") }
     if prefer :authentication, 'devise'
       generate 'testing:configure devise -f'
       if (prefer :devise_modules, 'confirmable') || (prefer :devise_modules, 'invitable')
