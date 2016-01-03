@@ -1329,6 +1329,7 @@ development:
   local_env_file: #{prefs[:local_env_file]}
   quiet_assets: #{prefs[:quiet_assets]}
   better_errors: #{prefs[:better_errors]}
+  chrome_rails_panel: #{prefs[:chrome_rails_panel]}
   pry: #{prefs[:pry]}
   rvmrc: #{prefs[:rvmrc]}
   dashboard: #{prefs[:dashboard]}
@@ -1454,6 +1455,10 @@ option  Use 'pry' as console replacement during development and test?
 choose  Enter your selection: [#{prefs[:pry]}]
 option  Use or create a project-specific rvm gemset?
 choose  Enter your selection: [#{prefs[:rvmrc]}]
+option  Use additional external icon lib?
+choose  Enter your selection: [#{prefs[:icon_lib]}]
+option  Add chrome rails panel(best for AJAX debug)?
+choose  Enter your selection: [#{prefs[:chrome_rails_panel]}]
 TEXT
   end
 
@@ -2608,6 +2613,7 @@ config['quiet_assets'] = yes_wizard?("Reduce assets logger noise during developm
 config['better_errors'] = yes_wizard?("Improve error reporting with 'better_errors' during development?") if true && true unless config.key?('better_errors') || prefs.has_key?(:better_errors)
 config['pry'] = yes_wizard?("Use 'pry' as console replacement during development and test?") if true && true unless config.key?('pry') || prefs.has_key?(:pry)
 config['rubocop'] = yes_wizard?("Use 'rubocop' to ensure that your code conforms to the Ruby style guide?") if true && true unless config.key?('rubocop') || prefs.has_key?(:rubocop)
+config['chrome_rails_panel'] = yes_wizard?("Use chrome meta panel (easy AJAX debug)?") if true && true unless config.key?('chrome_rails_panel') || prefs.has_key?(:chrome_rails_panel)
 @configs[@current_recipe] = config
 # >---------------------------- recipes/extras.rb ----------------------------start<
 
@@ -2711,6 +2717,12 @@ if prefs[:better_errors]
         add_gem 'binding_of_caller', :group => :development, :platforms => [:mri_19]
     end
   end
+end
+
+prefs[:chrome_rails_panel] = true if config['chrome_rails_panel']
+if prefs[:chrome_rails_panel]
+  say_wizard 'Add rails meta panel on your chrome browser. You need this  https://chrome.google.com/webstore/detail/railspanel/gjpfobpafnhjhbajcjgccbbdofdckggg'
+  add_gem 'meta_request', :group => [:development]
 end
 
 # Pry
@@ -2837,6 +2849,7 @@ Gemfile.write
 redacted_prefs = prefs.clone
 redacted_prefs.delete(:ban_spiders)
 redacted_prefs.delete(:better_errors)
+redacted_prefs.delete(:chrome_rails_panel)
 redacted_prefs.delete(:pry)
 redacted_prefs.delete(:dev_webserver)
 redacted_prefs.delete(:git)
