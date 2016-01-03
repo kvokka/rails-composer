@@ -1221,6 +1221,9 @@ if recipes.include? 'frontend'
     ["Bootstrap 3.3", "bootstrap3"], ["Bootstrap 2.3", "bootstrap2"],
     ["Zurb Foundation 5.5", "foundation5"], ["Zurb Foundation 4.0", "foundation4"],
     ["Simple CSS", "simple"]] unless prefs.has_key? :frontend
+    if (prefer :frontend, 'bootstrap3') || (prefer :frontend, 'bootstrap2')
+       prefs[:icon_lib] = multiple_choice "Add font awesome icon lib?", [["None", "none"],
+        ["Font awesome", "font_awesome"]] unless prefs.has_key? :icon_lib
 end
 
 ## Email
@@ -1636,8 +1639,10 @@ add_gem 'rails_layout', :group => :development
 case prefs[:frontend]
   when 'bootstrap2'
     add_gem 'bootstrap-sass', '~> 2.3.2.2'
+    add_gem 'font-awesome-rails' if prefer :icon_lib, 'font_awesome'
   when 'bootstrap3'
     add_gem 'bootstrap-sass'
+    add_gem 'font-awesome-rails' if prefer :icon_lib, 'font_awesome'
   when 'foundation4'
     add_gem 'zurb-foundation', '~> 4.3.2'
     add_gem 'compass-rails', '~> 1.1.2'
